@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t mchughrt/docker-react-frontend -f Dockerfil.dev .
+
+script:
+  - docker run -e CI=true mchughrt/docker-react-frontend npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "docker-react-frontend"
+  env: "Docker-react-frontend-env"
+  bucket_name: "S3-bucket-name"
+  bucket_path: "docker-react-frontend"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
